@@ -13,7 +13,12 @@
   },
   "dependencies": {
     "ejs": "2.3.3",
-    "express": "4.13.3"
+    "express": "4.13.3",
+    "request": "^2.79.0",
+    "concat-stream": "^1.5.2",
+    "cheerio": "^0.22.0",
+    "zlib": "^1.0.5",
+    "url-parse": "^1.1.7"
   },
   "author": "Kayson Li",
   "license": "ISC",
