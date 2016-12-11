@@ -57,8 +57,7 @@ var proxy = function(req, res) {
         res.end(inputBox);
         return;
     }
-    var url = parse(req.query.u);
-
+    var url = parse(decodeURIComponent(req.query.u));
     var con = concat(function(response) {
         if (!!response.copy && res._headers['content-type'].indexOf('text/html') > -1) {
             zlib.gunzip(response, function(err, decoded) {
@@ -68,7 +67,17 @@ var proxy = function(req, res) {
                     $('head').append(style);
                     $('body').prepend(inputBox);
                     $('body').append(baidu);
-                    data = $.html();
+                    var reg = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+                    // console.log($.html().match(reg));
+                    data = $.html().replace(reg, function(rep) {
+                        if (rep.indexOf('//') === 0) {
+                            rep = 'https:' + rep;
+                        }
+                        if (rep.indexOf('http') < 0) {
+                            rep = 'https://' + rep;
+                        }
+                        return '/?u=' + encodeURIComponent(rep);
+                    });
                 }
                 zlib.gzip(data, function(err, encoded) {
                     res.end(encoded);
