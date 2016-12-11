@@ -3,6 +3,7 @@ var request = require('request');
 var concat = require('concat-stream');
 var cheerio = require('cheerio');
 var zlib = require('zlib');
+var parse = require('url-parse');
 var app = express();
 
 app.set('port', (process.env.PORT || 5000));
@@ -31,12 +32,11 @@ var inputBox = `<div style="height: 50px; line-height: 50px;background-color: #3
 var style = `<link rel="stylesheet" href="//so.surge.sh/union.css">`
 
 var proxy = function(req, res) {
-    var host = 'https://www.baidu.com/';
     if (!req.query.u) {
         res.end(inputBox);
         return;
     }
-    var url = host + req.url;
+    var url = parse(req.query.u);
 
     var con = concat(function(response) {
         if (!!response.copy && res._headers['content-type'].indexOf('text/html') > -1) {
@@ -45,7 +45,8 @@ var proxy = function(req, res) {
                 var $ = data && cheerio.load(data);
                 if ($) {
                     $('head').append(style);
-                    $('body').append(inputBox).append(jd).append(baidu);
+                    $('body').prepend(inputBox);
+                    $('body').append(jd).append(baidu);
                     data = $.html();
                 }
                 zlib.gzip(data, function(err, encoded) {
@@ -60,7 +61,7 @@ var proxy = function(req, res) {
             }
         }
     });
-    req.pipe(request(url).on('response', function(response, body) {
+    req.pipe(request(url.href).on('response', function(response, body) {
         res.writeHead(response.statusCode, response.headers);
     })).pipe(con);
 }
