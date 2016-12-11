@@ -30,6 +30,16 @@ var inputBox = `<div style="height: 50px; line-height: 50px;background-color: #3
     </script>
     `
 var style = `<link rel="stylesheet" href="//so.surge.sh/union.css">`
+var baidu = `<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?0dcad04ab625721394250abdc8d28817";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+`
 
 var proxy = function(req, res) {
     if (!req.query.u) {
@@ -46,7 +56,7 @@ var proxy = function(req, res) {
                 if ($) {
                     $('head').append(style);
                     $('body').prepend(inputBox);
-                    $('body').append(jd).append(baidu);
+                    $('body').append(baidu);
                     data = $.html();
                 }
                 zlib.gzip(data, function(err, encoded) {
