@@ -1,0 +1,24 @@
+{
+  "name": "heroku-proxy",
+  "version": "1.0.0",
+  "description": "Web proxy",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaysonli/heroku-proxy.git"
+  },
+  "dependencies": {
+    "ejs": "2.3.3",
+    "express": "4.13.3"
+  },
+  "author": "Kayson Li",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kaysonli/heroku-proxy/issues"
+  },
+  "homepage": "https://github.com/kaysonli/heroku-proxy#readme"
+}
