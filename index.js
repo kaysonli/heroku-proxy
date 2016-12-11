@@ -11,11 +11,22 @@ app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
 var inputBox = `<div style="height: 50px; line-height: 50px;background-color: #333;color: #fff;">
-        <span>网址：</span><input type="text" id="proxy-url" style="width: 400px;margin-right: 10px;font-size: 16px"><button id="browse">GO</button>
+        <span>网址：</span><input value="http://" type="text" id="proxy-url" style="width: 400px;margin-right: 10px;font-size: 16px"><button id="browse">GO</button>
     </div>
     <script>
         +function() {
+            function browse(url) {
+                if(url.indexOf('http') < 0) {
+                    url = 'http://' + url;
+                }
+                window.location = window.location.href.split('?')[0] + '?u=' + encodeURIComponent(url);
+            }
             var input = document.getElementById('proxy-url');
+            input.addEventListener('keyup', function(e) {
+                if(e.keyCode === 13) {
+                    browse(input.value);
+                }
+            });
             window.addEventListener('load', function() {
                 console.log(location.href, input)
                 if(location.href.split('?').lenght > 1) {
@@ -24,7 +35,7 @@ var inputBox = `<div style="height: 50px; line-height: 50px;background-color: #3
             })
             document.getElementById('browse').addEventListener('click', function() {
                 var url = input.value;
-                window.location = window.location.href.split('?')[0] + '?u=' + encodeURIComponent(url);
+                browse(url);
             })
         }()
     </script>
