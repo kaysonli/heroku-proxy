@@ -52,8 +52,8 @@ var proxy = function(req, res) {
       zlib.gunzip(response, function (err, decoded) {
           var data = decoded && decoded.toString();
           var $ = data && cheerio.load(data);
-          $('head').append(style);
-          $('body').append(jd).append(baidu);
+          //$('head').append(style);
+          $('body').append(baidu);
           data = $.html();
           zlib.gzip(data, function(err, encoded) {
             res.end(encoded);
