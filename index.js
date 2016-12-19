@@ -61,19 +61,23 @@ var proxy = function(req, res) {
 
     var con = concat(function(response) {
         if (!!response.copy && res._headers['content-type'].indexOf('text/html') > -1) {
-            zlib.gunzip(response, function(err, decoded) {
-                var data = decoded && decoded.toString();
-                var $ = data && cheerio.load(data);
-                if ($) {
-                    $('head').append(style);
-                    $('body').prepend(inputBox);
-                    $('body').append(baidu);
-                    data = $.html();
-                }
-                zlib.gzip(data, function(err, encoded) {
-                    res.end(encoded);
+            try {
+                zlib.gunzip(response, function(err, decoded) {
+                    var data = decoded && decoded.toString();
+                    var $ = data && cheerio.load(data);
+                    if ($) {
+                        $('head').append(style);
+                        $('body').prepend(inputBox);
+                        $('body').append(baidu);
+                        data = $.html();
+                    }
+                    zlib.gzip(data, function(err, encoded) {
+                        res.end(encoded);
+                    });
                 });
-            });
+            } catch(e) {
+                console.log('error: ', e);
+            }
         } else {
             if (response.copy) {
                 res.end(response)
@@ -90,4 +94,8 @@ app.use(proxy);
 
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
+});
+
+process.on('uncaughtException', function (err) {
+  console.error(err);
 });
