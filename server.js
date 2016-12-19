@@ -101,10 +101,10 @@ app.use("/union", function(req, res) {
     res.writeHead(response.statusCode, response.headers);
   })).pipe(con);
 });
-// app.use('/', proxy);
-app.use('/', function(request, response) {
-  response.redirect('https://viaproxy.herokuapp.com/');
-});
+app.use('/', proxy);
+// app.use('/', function(request, response) {
+//   response.redirect('https://viaproxy.herokuapp.com/');
+// });
 // app.post('/', proxy);
 
 
