@@ -40,9 +40,6 @@ jd = `<div class="union">
 var style = `	<link rel="stylesheet" href="https://so.surge.sh/union.css">`
 var proxy = function(req, res) {  
   var host = 'https://www.google.com/';
-  if(req.url.indexOf('/union') === 0) {
-    host = 'http://u.x.jd.com/';
-  }
   var url = host + req.url;
   console.log('url: ', req.url)
   res.set('X-Product', 'GOFORIT');
@@ -52,9 +49,11 @@ var proxy = function(req, res) {
       zlib.gunzip(response, function (err, decoded) {
           var data = decoded && decoded.toString();
           var $ = data && cheerio.load(data);
-          //$('head').append(style);
-          $('body').append(baidu);
-          data = $.html();
+          if($) {
+            $('head').append(style);
+            $('body').append(baidu);
+            data = $.html();  
+          }
           zlib.gzip(data, function(err, encoded) {
             res.end(encoded);
           });
@@ -102,27 +101,15 @@ app.use("/union", function(req, res) {
     res.writeHead(response.statusCode, response.headers);
   })).pipe(con);
 });
-app.use('/', proxy);
+// app.use('/', proxy);
+app.use('/', function(request, response) {
+  response.redirect('https://viaproxy.herokuapp.com/');
+});
 // app.post('/', proxy);
 
 
-// app.use("/", function (req, resp) {
-//   var write = concat(function(response) {
-//     // Here you can modify the body
-//     // As an example I am replacing . with spaces
-//     if (response) {
-//       // response = response.toString().replace(/\./g, " ");
-//     }
-//     resp.end(response);
-//   });
-
-//   request.get('https://www.google.com/' + req.url)
-//       .on('response',
-//         function (response) {
-//           //Here you can modify the headers
-//           resp.writeHead(response.statusCode, response.headers);
-//         }
-//       ).pipe(write);
-// });
-
 app.listen(process.env.PORT || 3000); 
+
+process.on('uncaughtException', function(err) {
+    console.error(err);
+});
